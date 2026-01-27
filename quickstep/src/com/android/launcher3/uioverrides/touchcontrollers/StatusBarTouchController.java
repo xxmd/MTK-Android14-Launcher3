@@ -39,6 +39,8 @@ import com.android.quickstep.SystemUiProxy;
 
 import java.io.PrintWriter;
 
+import com.android.launcher3.proxy.SearchCenterProxy;
+
 /**
  * TouchController for handling touch events that get sent to the StatusBar. Once the
  * Once the event delta mDownY passes the touch slop, the events start getting forwarded.
@@ -56,6 +58,7 @@ public class StatusBarTouchController implements TouchController {
 
     /* If {@code false}, this controller should not handle the input {@link MotionEvent}.*/
     private boolean mCanIntercept;
+    private final SearchCenterProxy mSearchCenterProxy;
 
     public StatusBarTouchController(Launcher l) {
         mLauncher = l;
@@ -63,6 +66,7 @@ public class StatusBarTouchController implements TouchController {
         // Guard against TAPs by increasing the touch slop.
         mTouchSlop = 2 * ViewConfiguration.get(l).getScaledTouchSlop();
         mDownEvents = new SparseArray<>();
+        this.mSearchCenterProxy = SearchCenterProxy.INSTANCE.get(this.mLauncher);
     }
 
     @Override
@@ -74,6 +78,10 @@ public class StatusBarTouchController implements TouchController {
     }
 
     private void dispatchTouchEvent(MotionEvent ev) {
+        if (this.mSearchCenterProxy != null && this.mSearchCenterProxy.isSwitchOpen()) {
+            this.mSearchCenterProxy.onTouchMotionEvent(ev.getAction(), ev.getY());
+            return;
+        }
         if (mSystemUiProxy.isActive()) {
             mLastAction = ev.getActionMasked();
             mSystemUiProxy.onStatusBarMotionEvent(ev);
@@ -121,6 +129,9 @@ public class StatusBarTouchController implements TouchController {
     @Override
     public final boolean onControllerTouchEvent(MotionEvent ev) {
         int action = ev.getAction();
+        if (action == ACTION_MOVE && this.mSearchCenterProxy != null && this.mSearchCenterProxy.isSwitchOpen()) {
+            this.mSearchCenterProxy.onTouchMotionEvent(ev.getAction(), ev.getY());
+        }
         if (action == ACTION_UP || action == ACTION_CANCEL) {
             dispatchTouchEvent(ev);
             mLauncher.getStatsLogManager().logger()
