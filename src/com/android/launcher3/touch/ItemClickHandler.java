@@ -69,6 +69,8 @@ import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
+import com.android.launcher3.proxy.SearchCenterProxy;
+
 /**
  * Class for handling clicks on workspace and all-apps items
  */
@@ -348,6 +350,7 @@ public class ItemClickHandler {
             // Preload the icon to reduce latency b/w swapping the floating view with the original.
             FloatingIconView.fetchIcon(launcher, v, item, true /* isOpening */);
         }
+        SearchCenterProxy.INSTANCE.get(launcher).saveUsageStats(intent);
         launcher.startActivitySafely(v, intent, item);
     }
 
