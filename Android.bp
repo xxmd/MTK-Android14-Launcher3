@@ -28,7 +28,7 @@ filegroup {
 
 filegroup {
     name: "launcher-quickstep-src",
-    srcs: [ "quickstep/src/**/*.java", "quickstep/src/**/*.kt" ],
+    srcs: [ "quickstep/src/**/*.java", "quickstep/src/**/*.kt", "quickstep/src/**/*.aidl" ],
 }
 
 filegroup {
@@ -88,6 +88,7 @@ android_library {
     resource_dirs: [ ],
     manifest: "tests/tapl/AndroidManifest.xml",
     platform_apis: true,
+    local_include_dirs: ["quickstep/src"]
 }
 
 java_library_static {
@@ -226,6 +227,9 @@ android_app {
     lint: {
         baseline_filename: "lint-baseline-launcher3.xml",
     },
+    aidl: {
+        local_include_dirs: ["quickstep/src"]
+    }
 }
 
 // Library with all the dependencies for building quickstep
