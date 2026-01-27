@@ -88,7 +88,9 @@ android_library {
     resource_dirs: [ ],
     manifest: "tests/tapl/AndroidManifest.xml",
     platform_apis: true,
-    local_include_dirs: ["quickstep/src"]
+    aidl: {
+        local_include_dirs: ["quickstep/src"]
+    }
 }
 
 java_library_static {
