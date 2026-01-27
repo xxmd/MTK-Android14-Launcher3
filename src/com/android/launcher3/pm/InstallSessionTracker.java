@@ -36,6 +36,9 @@ import com.android.launcher3.util.PackageUserKey;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
 
+import android.content.Context;
+import android.util.Log;
+import com.android.launcher3.proxy.SearchCenterProxy;
 @WorkerThread
 public class InstallSessionTracker extends PackageInstaller.SessionCallback {
 
@@ -54,6 +57,7 @@ public class InstallSessionTracker extends PackageInstaller.SessionCallback {
     @Nullable
     private final LauncherApps mLauncherApps;
 
+    private Context mContext;
 
     InstallSessionTracker(@Nullable final InstallSessionHelper installerCompat,
             @Nullable final Callback callback, @NonNull final PackageInstaller installer,
@@ -64,6 +68,9 @@ public class InstallSessionTracker extends PackageInstaller.SessionCallback {
         mLauncherApps = launcherApps;
     }
 
+    public void setContext(Context context) {
+        mContext = context;
+    }
     @Override
     public void onCreated(final int sessionId) {
         InstallSessionHelper helper = mWeakHelper.get();
@@ -74,6 +81,7 @@ public class InstallSessionTracker extends PackageInstaller.SessionCallback {
         SessionInfo sessionInfo = pushSessionDisplayToLauncher(sessionId, helper, callback);
         if (sessionInfo != null) {
             callback.onInstallSessionCreated(PackageInstallInfo.fromInstallingState(sessionInfo));
+            AppProxy.INSTANCE.get(mContext).onInstallStart(sessionInfo.getAppPackageName());
         }
 
         helper.tryQueuePromiseAppIcon(sessionInfo);
@@ -94,6 +102,7 @@ public class InstallSessionTracker extends PackageInstaller.SessionCallback {
 
         if (key != null && key.mPackageName != null) {
             String packageName = key.mPackageName;
+            AppProxy.INSTANCE.get(mContext).onInstallFinished(packageName);
             PackageInstallInfo info = PackageInstallInfo.fromState(
                     success ? STATUS_INSTALLED : STATUS_FAILED,
                     packageName, key.mUser);
@@ -117,6 +126,7 @@ public class InstallSessionTracker extends PackageInstaller.SessionCallback {
         SessionInfo session = helper.getVerifiedSessionInfo(sessionId);
         if (session != null && session.getAppPackageName() != null) {
             callback.onPackageStateChanged(PackageInstallInfo.fromInstallingState(session));
+            AppProxy.INSTANCE.get(mContext).onProgressChanged(session.getAppPackageName(), progress);
         }
     }
 
