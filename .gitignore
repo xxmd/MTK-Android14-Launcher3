@@ -2,3 +2,6 @@
 build/
 .gradle/
 local.properties
+build.gradle
+.gradle/
+gradle/
