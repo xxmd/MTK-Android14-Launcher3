@@ -145,6 +145,8 @@ import java.util.LinkedList;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import com.android.launcher3.proxy.SearchCenterProxy;
+
 /**
  * Service connected by system-UI for handling touch interaction.
  */
@@ -498,6 +500,7 @@ public class TouchInteractionService extends Service
 
         ProtoTracer.INSTANCE.get(this).add(this);
         sConnected = true;
+        SearchCenterProxy.INSTANCE.get(this).bindSearchService(false);
     }
 
     private void disposeEventHandlers(String reason) {
