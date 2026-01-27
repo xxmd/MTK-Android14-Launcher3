@@ -239,7 +239,7 @@ public class InstallSessionHelper {
             @Nullable final InstallSessionTracker.Callback callback) {
         InstallSessionTracker tracker = new InstallSessionTracker(
                 this, callback, mInstaller, mLauncherApps);
-        tracker.setContext(mAppContext)
+        tracker.setContext(mAppContext);
         tracker.register();
         return tracker;
     }
