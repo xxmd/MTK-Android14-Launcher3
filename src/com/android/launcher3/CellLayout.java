@@ -91,7 +91,7 @@ import java.util.Stack;
 
 public class CellLayout extends ViewGroup {
     private static final String TAG = "CellLayout";
-    private static final boolean LOGD = false;
+    private static final boolean LOGD = true;
 
     /** The color of the "leave-behind" shape when a folder is opened from Hotseat. */
     private static final int FOLDER_LEAVE_BEHIND_COLOR = Color.argb(160, 245, 245, 245);
